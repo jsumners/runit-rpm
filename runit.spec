@@ -13,8 +13,8 @@ Release:        1%{?_with_dietlibc:diet}%{?dist}
 Group:          System/Base
 License:        BSD
 
-# Override _sbindir being /usr/sbin
-%define _sbindir /sbin
+# Override _bindir being /usr/sbin
+%define _bindir /sbin
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -71,7 +71,7 @@ EXTRA_FILES=$RPM_BUILD_ROOT/extra_files
 touch %{EXTRA_FILES}
 
 for i in $(< package/commands) ; do
-    %{__install} -D -m 0755 command/$i %{buildroot}%{_sbindir}/$i
+  %{__install} -D -m 0755 command/$i %{buildroot}/usr/bin/$i
 done
 for i in man/*8 ; do
     %{__install} -D -m 0755 $i %{buildroot}%{_mandir}/man8/${i##man/}
@@ -113,10 +113,10 @@ EOT
   %endif
 
   %if 0%{?rhel} < 6
-    grep -q 'RI:2345:respawn:/sbin/runsvdir-start' /etc/inittab
+    grep -q 'RI:2345:respawn:%{_sbindir}/runsvdir-start' /etc/inittab
     if [ $? -eq 1 ]; then
-      echo -n "Installing /sbin/runsvdir-start into /etc/inittab.."
-      echo "RI:2345:respawn:/sbin/runsvdir-start" >> /etc/inittab
+      echo -n "Installing %{_sbindir}/runsvdir-start into /etc/inittab.."
+      echo "RI:2345:respawn%{_sbindir}/runsvdir-start" >> /etc/inittab
       echo " success."
       # Reload init
       telinit q
@@ -150,15 +150,15 @@ fi
 
 %files -f %{EXTRA_FILES}
 %defattr(-,root,root,-)
-%{_sbindir}/chpst
-%{_sbindir}/runit
-%{_sbindir}/runit-init
-%{_sbindir}/runsv
-%{_sbindir}/runsvchdir
-%{_sbindir}/runsvdir
-%{_sbindir}/sv
-%{_sbindir}/svlogd
-%{_sbindir}/utmpset
+/usr/bin/chpst
+/usr/bin/runit
+/usr/bin/runit-init
+/usr/bin/runsv
+/usr/bin/runsvchdir
+/usr/bin/runsvdir
+/usr/bin/sv
+/usr/bin/svlogd
+/usr/bin/utmpset
 %{_sbindir}/runsvdir-start
 %{_mandir}/man8/*.8*
 %doc doc/* etc/
