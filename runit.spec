@@ -100,7 +100,7 @@ start on runlevel [2345]
 stop on runlevel [^2345]
 normal exit 0 111
 respawn
-exec /sbin/runsvdir-start
+exec /usr/sbin/runsvdir-start
 EOT
     # tell init to start the new service
       start runsvdir
