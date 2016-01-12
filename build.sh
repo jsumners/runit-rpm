@@ -1,11 +1,13 @@
 #!/bin/bash
 
 CWD=$(pwd)
+VERSION=2.1.2
 SPEC="runit.spec"
+SOURCE_URL="http://smarden.org/runit/runit-${VERSION}.tar.gz"
 
-which git > /dev/null
+which wget > /dev/null
 if [ $? -ne 0 ]; then
-  echo "Aborting. Cannot continue without git."
+  echo "Aborting. Cannot continue without wget."
   exit 1
 fi
 
@@ -21,6 +23,12 @@ mkdir -p rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS,tmp}
 cp ${SPEC} rpmbuild/SPECS/
 cp *.patch rpmbuild/SOURCES/
 cp *.service rpmbuild/SOURCES/
+
+echo "Downloading sources..."
+cd rpmbuild/SOURCES
+if [ ! -f runit-${VERSION}.tar.gz ]; then
+  wget ${SOURCE_URL}
+fi
 
 if [ -f ${CWD}/gpg-env ]; then
   echo "Building RPM with GPG signing..."
